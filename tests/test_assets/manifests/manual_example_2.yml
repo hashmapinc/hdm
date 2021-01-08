@@ -1,0 +1,88 @@
+# Copyright © 2020 Hashmap, Inc
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+version: 1
+
+orchestrator:
+  name: Manual Orchestration
+  type: declared_orchestrator
+  conf: null
+
+state_manager:
+  name: state_manager
+  type: SQLiteStateManager
+  conf:
+    connection: state-manager-sqlite
+
+declared_data_links:
+  stages:
+
+# Netezza to FS - single
+    - source:
+        name: netezza_source
+        type: NetezzaSource
+        conf:
+          env: netezza
+          table_name: ADMIN.TEST1
+          checksum:
+              function:
+              column:
+      sink:
+        name: fs_chunk_stg
+        type: FSSink
+        conf:
+          directory: $HDM_DATA_STAGING
+
+# Chunk FS to FS
+    - source:
+        name: fs_chunk_stg
+        type: FSChunkSource
+        conf:
+          directory: $HDM_DATA_STAGING
+          overwrite: false
+          chunk: 200
+      sink:
+        name: fs_stg
+        type: FSSink
+        conf:
+          directory: $HDM_DATA_STAGING
+
+# FS to AzureBlob
+    - source:
+        name: fs_stg
+        type: FSSource
+        conf:
+          directory: $HDM_DATA_STAGING
+          overwrite: false
+      sink:
+        name: azure_sink
+        type: AzureBlobSink
+        conf:
+          env: azure
+          container: data
+#cloud storage create staging and run copy
+    - source:
+        name: azure_source
+        type: AzureBlobSource
+        conf:
+          env: azure
+          container: data
+      sink:
+        name: sflk_copy_into_sink
+        type: SnowflakeAzureCopySink
+        conf:
+          env: snowflake_knerrir_schema
+          stage_name: TMP_KNERRIR
+          file_format: csv
+          stage_directory: data

@@ -1,0 +1,42 @@
+# Copyright © 2020 Hashmap, Inc
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#This is a sample of hdm_profiles.yml
+#The location of this configuration should be
+version: 1
+#Connections can be specified based on environments
+dev:
+  #Profile for dev/test env
+  s3conn:
+    #Connections to S3 can be made by using profile file in .aws folder explicitly passing access key, secret key, region name
+    #Name of AWS Profile to Connect to S3 Bucket
+    profile: <-profile name->
+    #Access Key Details
+    aws_access_key_id: <-access-key-id->
+    aws_secret_access_key: <-access-key-secret-key->
+    region: <-region-name->
+  state_manager:
+    #Connections to state manager db
+    # We are using MySQL for State Management.
+    user: <-db-user->
+    password: <-db-password->
+    host: <-db-host->
+    port: <-db-port->
+    database: <-db->
+non-prod:
+#Profile for non-prod env
+prod:
+#Profile for prod env
+
+

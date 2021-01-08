@@ -1,0 +1,32 @@
+# Copyright © 2020 Hashmap, Inc
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+version: 1
+dev:
+unit-test:
+  s3conn:
+    profile: default    #Name of AWS Profile to Connect to S3 Bucket
+
+  state-manager-sqlite:
+    #Path were sqlite file will be created. If no value is provided, dbpath is current directory.
+    #dbpath:
+    #Name of db file
+    database: hdm
+    table: state_management
+
+  state-manager-mysql:
+    user: $MYSQL_TEST_USER
+    password: $MYSQL_TEST_PASS
+    host: $MYSQL_TEST_HOST
+    port: $MYSQL_TEST_PORT
+    database: $MYSQL_TEST_DB

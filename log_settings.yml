@@ -1,0 +1,51 @@
+# Copyright © 2020 Hashmap, Inc
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+version: 1
+formatters:
+  simple:
+    format: '%(asctime)s - %(name)s - %(levelname)s  - %(message)s'
+  json:
+    format: '%(asctime)s %(name)s %(levelname)s %(message)s'
+    class: pythonjsonlogger.jsonlogger.JsonFormatter
+handlers:
+  console:
+    class : logging.StreamHandler
+    formatter: simple
+    level   : INFO
+    stream  : ext://sys.stdout
+  file:
+    class : logging.handlers.RotatingFileHandler
+    formatter: json
+    level: INFO
+    filename: hdm.log
+    maxBytes: 1048576
+    backupCount: 20
+loggers:
+  hdm:
+    level: INFO
+    handlers: [file, console]
+    propagate: True
+  hdm.core.source.netezza_source:
+    level: INFO
+    handlers: [file, console]
+    propagate: True
+  hdm.core.source.fs_source:
+    level: INFO
+    handlers: [file, console]
+    propagate: True
+  hdm.core.source.snowflake_external_stage_source:
+    level: INFO
+    handlers: [file, console]
+    propagate: True

@@ -1,0 +1,55 @@
+# Copyright © 2020 Hashmap, Inc
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+version: 1
+
+orchestrator:
+  name: Batch Orchestration
+  type: BatchOrchestrator
+  conf:
+    back_pressure_factor: 10
+
+state_manager:
+  name: state_manager
+  type: SQLiteStateManager
+  conf:
+    connection: state-manager-sqlite
+
+template_data_links:
+
+  templates:
+# Netezza to FS - template
+    - batch_template:
+      batch_definition:
+          source_name: netezza_source
+          scenarios:
+            - table_name: ADMIN.TEST1
+            - table_name: ADMIN.TEST2
+      source:
+        name: netezza_source
+        type: NetezzaSource
+        conf:
+          env: netezza
+          table_name: <<template>>
+          watermark:
+              column: time
+              offset: 2
+          checksum:
+              function:
+              column:
+      sink:
+        name: fs_chunk_stg
+        type: FSSink
+        conf:
+          directory: $HDM_DATA_STAGING

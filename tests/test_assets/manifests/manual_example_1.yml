@@ -1,0 +1,45 @@
+# Copyright © 2020 Hashmap, Inc
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+version: 1
+
+orchestrator:
+  name: Manual Orchestration
+  type: declared_orchestrator
+  conf: null
+
+state_manager:
+  name: state_manager
+  type: SQLiteStateManager
+  conf:
+    connection: state-manager-sqlite
+
+declared_data_links:
+  stages:
+
+# Netezza to FS - single
+    - source:
+        name: netezza_source
+        type: NetezzaSource
+        conf:
+          env: netezza
+          table_name: TEST.ADMIN.BOB
+          checksum:
+              function:
+              column:
+      sink:
+        name: fs_chunk_stg
+        type: FSSink
+        conf:
+          directory: $HDM_DATA_STAGING
