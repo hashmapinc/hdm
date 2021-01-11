@@ -25,7 +25,7 @@ from hdm.data_link_builder import DataLinkBuilder
 
 class TestEnvUtils:
     PATH = os.path.dirname(os.path.realpath(__file__))
-    CONF_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../test_assets2")
+    CONF_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../test_assets")
     ENV = 'unit-test'
 
     TEST_DIR = os.getenv('TEST_DIR')  # 'tmptestsdir'
