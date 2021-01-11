@@ -14,7 +14,8 @@
 
 stages:
   - test
-  - test_netezza_clone
+  - test_deploy
+  - prod_deploy
 
 test:
   stage: test
@@ -27,21 +28,32 @@ test:
 #    - prospector
     - coverage run -m nose2 && coverage report -m
 
-.test_deploy:
-  stage: test_deploy
-  image: python:3.7.7-buster
-  script:
-    - cat $PYPIRC > /tmp/.pypirc
-    - pip install twine
-    - python setup.py sdist
-    - python -m twine upload --verbose --repository gitlab dist/* --config-file /tmp/.pypirc
-
-  rules:
-    - if: $CI_MERGE_REQUEST_IID
-
-test_netezza_clone:
+.test_netezza_clone:
   stage: test_netezza_clone
   trigger:
     include: clone/common/clone_repo.yml
   only:
     - master
+
+test_deploy:
+  stage: test_deploy
+  image: python:3.7.7-buster
+  script:
+    - rm -rf dist
+    - pip install twine
+    - python setup.py sdist
+    - twine upload --verbose -u $PYPIUN -p $PYPIPSWD --repository-url https://test.pypi.org/legacy/ dist/*
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+
+prod_deploy:
+  stage: prod_deploy
+  image: python:3.7.7-buster
+  script:
+    - rm -rf dist
+    - pip install twine
+    - python setup.py sdist
+    - twine upload --verbose -u $PYPIUN_PROD -p $PYPIPSWD_PROD dist/*
+  only:
+    refs:
+      - master
