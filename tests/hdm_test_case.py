@@ -13,9 +13,8 @@
 # limitations under the License.
 import os
 from unittest import TestCase
-from hdm.core2.dao.sqlite import SqLite
-
-from tests.core2.Sagas.testenv_utils import TestEnvUtils
+from hdm.core.dao.sqlite import SqLite
+from tests.core.Sagas.testenv_utils import TestEnvUtils
 
 
 class HDMTestCase(TestCase):
