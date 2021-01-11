@@ -14,7 +14,7 @@
 
 import sqlalchemy
 import unittest
-from hdm.core.dao.mysql import MySQL
+from hdm.core2.dao.mysql import MySQL
 from tests.hdm_test_case import HDMTestCase
 
 

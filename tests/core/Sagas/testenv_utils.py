@@ -19,13 +19,13 @@ from distutils.util import strtobool
 from typing import Union
 import pandas as pd
 from sqlalchemy import schema, Table, Column, Text
-from hdm.core.state_management.state_manager import StateManager
+from hdm.core2.state_management.state_manager import StateManager
 from hdm.data_link_builder import DataLinkBuilder
 
 
 class TestEnvUtils:
     PATH = os.path.dirname(os.path.realpath(__file__))
-    CONF_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../test_assets")
+    CONF_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../test_assets2")
     ENV = 'unit-test'
 
     TEST_DIR = os.getenv('TEST_DIR')  # 'tmptestsdir'
@@ -131,6 +131,7 @@ class TestEnvUtils:
         metadata = schema.MetaData(bind=sqlite_connection)
         Table(table_name, metadata,
               Column('state_id', Text()),
+              Column('run_id', Text()),
               Column('job_id', Text()),
               Column('correlation_id_in', Text()),
               Column('correlation_id_out', Text()),
@@ -152,7 +153,8 @@ class TestEnvUtils:
               Column('sinking_start_time', Text()),
               Column('sinking_end_time', Text()),
               Column('updated_on', Text()),
-              Column('row_count', Text())
+              Column('row_count', Text()),
+              Column('manifest_name', Text())
               )
         metadata.create_all(sqlite_connection.engine)
 

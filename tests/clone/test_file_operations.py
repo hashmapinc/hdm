@@ -14,7 +14,7 @@
 
 from unittest import TestCase
 from unittest.mock import MagicMock
-from clone.config.netezza_config import NetezzaConfig
+from clone2.config.netezza_config import NetezzaConfig
 import fileinput
 
 
@@ -50,7 +50,7 @@ class TestFileOperations(TestCase):
             index += 1
 
     def test_text_replacement(self):
-        input_file = "./build_setup.py"
+        input_file = "build_setup.py"
 
         # Prep the test file for the current test run
         with fileinput.FileInput(input_file, inplace=True) as file:

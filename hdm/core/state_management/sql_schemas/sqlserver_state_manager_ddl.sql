@@ -16,6 +16,7 @@ DROP TABLE IF EXISTS `state_manager`;
 --changes in status amd update_on columns
 CREATE TABLE `state_manager` (
   `state_id` varchar(32) DEFAULT NULL,
+  `run_id` varchar(32) DEFAULT NULL,
   `job_id` varchar(32) DEFAULT NULL,
   `correlation_id_in` varchar(32) DEFAULT NULL,
   `correlation_id_out` varchar(32) DEFAULT NULL,
@@ -37,7 +38,8 @@ CREATE TABLE `state_manager` (
   `sinking_start_time` datetime,
   `sinking_end_time` datetime,
   `row_count` int DEFAULT NULL,
-  `updated_on` datetime NULL
+  `updated_on` datetime NULL,
+  `manifest_name` varchar(256) DEFAULT NULL
 );
 
 --create trigger to update updated_on

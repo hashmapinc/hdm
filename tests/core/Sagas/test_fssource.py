@@ -16,9 +16,9 @@ from unittest import TestCase
 
 import pandas as pd
 
-from hdm.core.dao.sqlite import SqLite
-from hdm.core.source.fs_source import FSSource
-from hdm.core.state_management.state_manager import StateManager
+from hdm.core2.dao.sqlite import SqLite
+from hdm.core2.source.fs_source import FSSource
+from hdm.core2.state_management.state_manager import StateManager
 from tests.core.Sagas.testenv_utils import TestEnvUtils
 
 
@@ -99,10 +99,3 @@ class TestFsSource(TestCase):
         self.__produce_df(self.__test_csv_conf)
         # Try reprocessing and verify if skipped or not
         self.__produce_df(self.__test_csv_conf, skipped=True)
-
-    def test_source_overwrite_processed_csv(self):
-        self.__test_csv_conf['source']['conf']['overwrite'] = 'true'
-        self.__test_csv_conf['source']['conf']['state_manager'] = self.__state_manager
-        self.__produce_df(self.__test_csv_conf)
-        # Try reprocessing and verify if overwritten or not
-        self.__produce_df(self.__test_csv_conf)

@@ -80,8 +80,6 @@ class NetezzaConfig:
                                   'hdm/core/catalog/mapper/__init__.py',
                                   'hdm/core/catalog/mapper/netezza_to_snowflake_mapper.py']
 
-        hdm_core_chunk_files = ['hdm/core/chunk/__init__.py', 'hdm/core/chunk/csv_chunk.py', 'hdm/core/chunk/chunk.py']
-
         hdm_core_dao_files = ['hdm/core/dao/__init__.py',
                               'hdm/core/dao/dao.py',
                               'hdm/core/dao/netezza.py',
@@ -140,7 +138,6 @@ class NetezzaConfig:
         self.hdm_files = list(itertools.chain(hdm_root_files,
                                               hdm_core_root_files,
                                               hdm_core_catalog_files,
-                                              hdm_core_chunk_files,
                                               hdm_core_dao_files,
                                               hdm_core_error_files,
                                               hdm_core_orchestrator_files,

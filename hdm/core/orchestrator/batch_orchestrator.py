@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import os
+import uuid
 from copy import deepcopy
 
 from hdm.core.error.hdm_error import HDMError
@@ -52,24 +53,31 @@ class BatchOrchestrator(Orchestrator):
     def _build_data_links(self):
         config = ParseConfig.parse(config_path=os.getenv('HDM_MANIFEST'))
         state_manager_config = config['state_manager']
+        manifest_name = os.getenv('HDM_MANIFEST')[os.getenv('HDM_MANIFEST').rindex("/")+1:]
+        run_id = uuid.uuid4().hex
 
         if 'template_data_links' in config.keys():
             template_data_link_configs = config['template_data_links']
-            self._generate_templated_data_links(state_manager_config=state_manager_config, template_data_link_configs=template_data_link_configs['templates'])
+            self._generate_templated_data_links(state_manager_config=state_manager_config, template_data_link_configs=template_data_link_configs['templates'],
+                                                manifest_name=manifest_name, run_id=run_id)
 
         if 'declared_data_links' in config.keys():
             declared_data_link_configs = config['declared_data_links']
-            self._generate_data_links(link_configs=declared_data_link_configs['stages'], state_manager_config=state_manager_config)
+            self._generate_data_links(link_configs=declared_data_link_configs['stages'], state_manager_config=state_manager_config, manifest_name=manifest_name, run_id=run_id)
 
-    def _generate_templated_data_links(self, state_manager_config: dict, template_data_link_configs: dict):
+    def _generate_templated_data_links(self, state_manager_config: dict, template_data_link_configs: dict, manifest_name: str, run_id):
         for link_config in template_data_link_configs:
-            self._generate_data_links(link_configs=self._generate_configs(link_config), state_manager_config=state_manager_config, pressure=True)
+            self._generate_data_links(link_configs=self._generate_configs(link_config), state_manager_config=state_manager_config, manifest_name=manifest_name, run_id=run_id,
+                                      pressure=True)
 
-    def _generate_data_links(self, state_manager_config: dict, link_configs: list, pressure=True):
+    def _generate_data_links(self, state_manager_config: dict, link_configs: list, manifest_name: str, run_id, pressure=True):
         for link_config in link_configs:
 
             # Create New State Manager
-            link_state = self._generate_state_manager(state_manager_config=state_manager_config, data_link_config=link_config)
+            link_state = self._generate_state_manager(state_manager_config=state_manager_config,
+                                                      data_link_config=link_config,
+                                                      manifest_name=manifest_name,
+                                                      run_id=run_id)
 
             # Add the state manager to the sink and source
             link_config['source']['conf']['state_manager'] = link_state

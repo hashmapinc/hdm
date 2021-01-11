@@ -16,8 +16,8 @@ import os
 
 from providah.factories.package_factory import PackageFactory as pf
 
-from hdm.core.orchestrator.orchestrator import Orchestrator
-from hdm.core.utils.parse_config import ParseConfig
+from hdm.core2.orchestrator.orchestrator import Orchestrator
+from hdm.core2.utils.parse_config import ParseConfig
 
 
 class MigrationDriver:

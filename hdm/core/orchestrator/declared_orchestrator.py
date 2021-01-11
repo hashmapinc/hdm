@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import os
+import uuid
 
 from hdm.core.error.hdm_error import HDMError
 from hdm.core.orchestrator.orchestrator import Orchestrator
@@ -31,11 +32,16 @@ class DeclaredOrchestrator(Orchestrator):
     def _build_data_links(self):
         config = ParseConfig.parse(config_path=os.getenv('HDM_MANIFEST'))
         state_manager_config = config['state_manager']
+        manifest_name = os.getenv('HDM_MANIFEST')[os.getenv('HDM_MANIFEST').rindex("/")+1:]
+        run_id = uuid.uuid4().hex
 
         for link_config in config['declared_data_links']['stages']:
 
             # Create New State Manager
-            link_state = self._generate_state_manager(state_manager_config=state_manager_config, data_link_config=link_config)
+            link_state = self._generate_state_manager(state_manager_config=state_manager_config,
+                                                      data_link_config=link_config,
+                                                      manifest_name=manifest_name,
+                                                      run_id=run_id)
 
             # Add the state manager to the sink and source
             link_config['source']['conf']['state_manager'] = link_state

@@ -27,6 +27,7 @@ class Sink:
         self._entity_filter: str = ""
         self._state_manager = kwargs['state_manager']
         self._state_manager_values = {}
+        self._sink_name = ""
         self._is_running = False
 
     @property
@@ -80,11 +81,15 @@ class Sink:
 
         # Get the current state
         file_name = kwargs.get("file_name", None)
-        current_state = self._get_current_state(entity=file_name)
+        parent_file_name = kwargs.get("parent_file_name", None)
+        source_filter = kwargs.get("source_filter", None)
+        if parent_file_name:
+            # for chunk source where parent file name is the source_entity.
+            current_state = self._get_current_state(entity=parent_file_name, entity_filter=source_filter)
+        else:
+            current_state = self._get_current_state(entity=file_name, entity_filter=source_filter)
 
         if not current_state:
-            # TODO : discuss with John
-            # insert a new state or bypass?
             current_state = self._insert_and_get_current_state()
         try:
             kwargs['current_state'] = current_state
@@ -107,10 +112,11 @@ class Sink:
             # Set that it is no longer running
             self._is_running = False
 
-    def _get_current_state(self, entity) -> dict:
-        current_state = self._state_manager.get_current_state(entity)
+    def _get_current_state(self, entity, entity_filter) -> dict:
+        current_state = self._state_manager.get_current_state(entity, entity_filter)
         if not current_state:
             return current_state
+        self._sink_name = current_state['sink_name']
         current_state_after_update = self._state_manager.update_state(
             source_entity=current_state['source_entity'],
             source_filter=current_state['source_filter'],

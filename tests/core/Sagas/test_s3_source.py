@@ -20,7 +20,7 @@ import pandas as pd
 import logging
 
 # Name of testing directory created for ingesting files
-from hdm.core.source.s3_source import S3Source
+from hdm.core2.source.s3_source import S3Source
 
 # Bucket name for test cases
 S3_BUCKET_NAME = 'knerrir-testbucket'
