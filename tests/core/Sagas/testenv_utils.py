@@ -131,6 +131,7 @@ class TestEnvUtils:
         metadata = schema.MetaData(bind=sqlite_connection)
         Table(table_name, metadata,
               Column('state_id', Text()),
+              Column('run_id', Text()),
               Column('job_id', Text()),
               Column('correlation_id_in', Text()),
               Column('correlation_id_out', Text()),
@@ -152,7 +153,8 @@ class TestEnvUtils:
               Column('sinking_start_time', Text()),
               Column('sinking_end_time', Text()),
               Column('updated_on', Text()),
-              Column('row_count', Text())
+              Column('row_count', Text()),
+              Column('manifest_name', Text())
               )
         metadata.create_all(sqlite_connection.engine)
 

@@ -11,7 +11,6 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
 from unittest import TestCase
 from unittest.mock import MagicMock
 from clone.config.netezza_config import NetezzaConfig
@@ -50,7 +49,7 @@ class TestFileOperations(TestCase):
             index += 1
 
     def test_text_replacement(self):
-        input_file = "./build_setup.py"
+        input_file = "build_setup.py"
 
         # Prep the test file for the current test run
         with fileinput.FileInput(input_file, inplace=True) as file:

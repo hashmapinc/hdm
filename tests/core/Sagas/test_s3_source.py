@@ -25,6 +25,7 @@ from hdm.core.source.s3_source import S3Source
 # Bucket name for test cases
 S3_BUCKET_NAME = 'knerrir-testbucket'
 
+
 @unittest.skip
 class TestS3(TestCase):
     __logger = logging.getLogger(__name__)

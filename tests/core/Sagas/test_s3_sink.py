@@ -23,6 +23,7 @@ from tests.core.Sagas.testenv_utils import TestEnvUtils
 # Bucket name where CSV's will be created. Will be prefixed with 'hdm-'
 S3_BUCKET_NAME = 'testbucket'
 
+
 @unittest.skip
 class TestS3Sink(TestCase):
     __logger = logging.getLogger(__name__)

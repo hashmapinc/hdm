@@ -13,6 +13,7 @@ CREATE DATABASE `hdm`;
 DROP TABLE IF EXISTS `state_manager`;
 CREATE TABLE `state_manager` (
   `state_id` varchar(32) DEFAULT NULL,
+  `run_id` varchar(32) DEFAULT NULL,
   `job_id` varchar(32) DEFAULT NULL,
   `correlation_id_in` varchar(32) DEFAULT NULL,
   `correlation_id_out` varchar(32) DEFAULT NULL,
@@ -35,5 +36,6 @@ CREATE TABLE `state_manager` (
   `sinking_end_time` datetime,
   `updated_on` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `row_count` int DEFAULT NULL,
-  `created_on` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `created_on` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `manifest_name` varchar(256) DEFAULT NULL
 );

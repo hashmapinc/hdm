@@ -41,13 +41,11 @@ class AzureBlobSink(Sink):
         df = kwargs['data_frame']
         table_name: str = kwargs.get("table_name")
 
-        file_name = kwargs.get('file_name', f"{ProjectConfig.file_prefix()}_{str(time.time_ns())}.csv")
-        self._entity = file_name
-        self._entity_filter = GenericFunctions.table_to_folder(table_name)
-        file_name = os.path.join(GenericFunctions.table_to_folder(table_name), file_name)
+        self._entity = kwargs.get('file_name', f"{ProjectConfig.file_prefix()}_{str(time.time_ns())}.csv")
+        self._entity_filter = os.path.join(self._sink_name, GenericFunctions.table_to_folder(table_name))
         with self.__azure_dao.connection as client:
             self.__container = client.get_container_client(self.__container_name)
-            blob_client = self.__container.get_blob_client(file_name)
+            blob_client = self.__container.get_blob_client(os.path.join(self._sink_name, GenericFunctions.table_to_folder(table_name), self._entity))
             self.__putFile(df, blob_client)
         return dict(record_count=df.shape[0])
 

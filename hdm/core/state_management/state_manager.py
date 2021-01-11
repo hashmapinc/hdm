@@ -45,6 +45,8 @@ class StateManager:
         self._source: SourceSinkDescriptor = SourceSinkDescriptor()
         self._sink: SourceSinkDescriptor = SourceSinkDescriptor()
         self._job_id = None
+        self._run_id = None
+        self._manifest_name = None
         self._ddl_file = kwargs.get('ddl_file')
 
         self._env = kwargs.get('connection', 'state_manager')
@@ -87,6 +89,18 @@ class StateManager:
         self._job_id = value
 
     job_id = property(None, job_id)
+
+    # Setter only manifest_name
+    def manifest_name(self, value: str):
+        self._manifest_name = value
+
+    manifest_name = property(None, manifest_name)
+
+    # Setter only run_id
+    def run_id(self, value: str):
+        self._run_id = value
+
+    run_id = property(None, run_id)
 
     # ----------------------------------------------------------- #
     # --------------------- Public Methods ---------------------- #
@@ -172,12 +186,13 @@ class StateManager:
 
         return self.__run_query(query, state)
 
-    def get_current_state(self, entity: str = None) -> dict:
+    def get_current_state(self, entity: str = None, entity_filter: str = None) -> dict:
         with self._conn.connection as conn:
             query = f"SELECT * FROM {self._table.name} WHERE job_id='{self._job_id}'"
             if entity:
                 query += f" and source_entity='{entity}'"
-
+                if entity_filter:
+                    query += f" and source_filter='{json.dumps(entity_filter)}'"
             df = pd.read_sql(sql=query, con=conn)
 
             # TODO: discuss with John
@@ -197,26 +212,35 @@ class StateManager:
             'sinking_end_time': df['sinking_end_time'][0],
             'first_record_pulled': df['first_record_pulled'][0],
             'last_record_pulled': df['last_record_pulled'][0],
-            'record_count': df['row_count'][0]
+            'record_count': df['row_count'][0],
+            'sink_name': self._sink.name,
+            'source_name': self._source.name,
+            'manifest_name': self._manifest_name,
+            'run_id': self._run_id
         }
 
     def get_last_record(self, entity: str = None) -> dict:
         with self._conn.connection as conn:
-            query = f"SELECT * FROM {self._table.name} WHERE source_entity='{entity}' ORDER BY updated_on desc"
+            query = f"SELECT * FROM {self._table.name} WHERE manifest_name='{self._manifest_name}' " \
+                    f"and source_entity='{entity}' ORDER BY updated_on desc"
             df = pd.read_sql(sql=query, con=conn)
-
-            # TODO: discuss with John
             if df.empty:
                 return None
 
         return df['last_record_pulled'][0]
 
+    def get_sink_name(self) -> str:
+        return self._sink.name
+
+    def get_source_name(self) -> str:
+        return self._source.name
+
     def get_processing_history(self) -> list:
         self._logger.debug("get_processing_history: %s", self._source.name)
         with self._conn.connection as conn:
             df = pd.read_sql(
-                sql=f"SELECT distinct sink_entity FROM {self._table.name} WHERE "
-                    f"source_name='{self._source.name}'",
+                sql=f"SELECT distinct source_entity FROM {self._table.name} WHERE "
+                    f"source_name='{self._source.name}' and manifest_name='{self._manifest_name}'",
                 con=conn)
         return df.values.tolist()
 
@@ -252,11 +276,11 @@ class StateManager:
         The solution is to not format the datetime as a string, just pass the datetime value itself.
         """
         source_filter = source_filter
-        if source_filter:
+        if source_filter and (isinstance(source_filter, dict) or isinstance(source_filter, list)):
             source_filter = json.dumps(source_filter)
 
         sink_filter = sink_filter
-        if sink_filter:
+        if sink_filter and (isinstance(sink_filter, dict) or isinstance(sink_filter, list)):
             sink_filter = json.dumps(sink_filter)
 
         if self._format_date and sourcing_start_time:
@@ -323,7 +347,9 @@ class StateManager:
                              sinking_end_time=state['sinking_end_time'],
                              row_count=state['record_count'],
                              first_record_pulled=state['first_record_pulled'],
-                             last_record_pulled=state['last_record_pulled'])
+                             last_record_pulled=state['last_record_pulled'],
+                             manifest_name=self._manifest_name,
+                             run_id=self._run_id)
 
         with self._conn.connection as conn:
             self._logger.debug("%s - action is %s - status is %s", query, state['action'], state['status'])
@@ -363,7 +389,11 @@ class StateManager:
             'sinking_end_time': sinking_end_time,
             'first_record_pulled': state['first_record_pulled'],
             'last_record_pulled': state['last_record_pulled'],
-            'record_count': state['record_count']
+            'record_count': state['record_count'],
+            'sink_name': self._sink.name,
+            'source_name': self._source.name,
+            'manifest_name': self._manifest_name,
+            'run_id': self._run_id
         }
 
     @classmethod

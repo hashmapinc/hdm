@@ -37,6 +37,8 @@ class Source:
         self._processed_history_list = self._state_manager.get_processing_history()
         self._is_running = False
         self._correlation_id_out = None
+        self._source_name = self._state_manager.get_source_name()
+        self._sink_name = self._state_manager.get_sink_name()
 
     @property
     def is_running(self):
@@ -79,6 +81,8 @@ class Source:
     def _run(self, **kwargs) -> dict:
         self._last_record_pulled = self._get_last_record()
         current_state = self._pre_consume()
+        self._sink_name = current_state['sink_name']
+        self._source_name = current_state['source_name']
         try:
             data_dict = self._get_data(**kwargs)
             current_state['status'] = 'success'

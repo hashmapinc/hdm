@@ -65,7 +65,6 @@ declared_data_links:
         type: FSChunkSource
         conf:
           directory: $HDM_DATA_STAGING
-          overwrite: false
           chunk: 200
       sink:
         name: fs_stg
@@ -79,7 +78,6 @@ declared_data_links:
         type: FSSource
         conf:
           directory: $HDM_DATA_STAGING
-          overwrite: false
       sink:
         name: azure_sink
         type: AzureBlobSink
@@ -89,7 +87,7 @@ declared_data_links:
 
 #cloud storage create staging and run copy
     - source:
-        name: azure_source
+        name: azure_sink
         type: AzureBlobSource
         conf:
           env: azure

@@ -45,7 +45,6 @@ data_links:
         type: FSChunkSource
         conf:
           directory: D:/Work/temp/Input
-          overwrite: false
           chunk: 200
       sink:
         name: fs_stg
@@ -58,7 +57,6 @@ data_links:
         type: FSSource
         conf:
           directory: D:/Work/temp/Input
-          overwrite: false
       sink:
         name: azure_sink
         type: AzureBlobSink

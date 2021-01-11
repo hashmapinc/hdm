@@ -1,4 +1,0 @@
-clone
-demos
-hdm
-tests

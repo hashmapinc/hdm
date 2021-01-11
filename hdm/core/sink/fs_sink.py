@@ -86,9 +86,10 @@ class FSSink(Sink):
         Returns: none
         """
         if table_name:
-            destination_directory = os.path.join(self.__dest_path, GenericFunctions.table_to_folder(table_name))
+            destination_directory = os.path.join(self.__dest_path, self._sink_name, GenericFunctions.table_to_folder(table_name))
         else:
             destination_directory = self.__dest_path
+
         if not os.path.exists(destination_directory):
             os.makedirs(destination_directory)
         self._entity_filter = destination_directory

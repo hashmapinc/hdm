@@ -40,11 +40,10 @@ class FSSource(Source):
         """
         super().__init__(**kwargs)
         # Check if location for files to process exists
-        self.__source_path = kwargs.get('directory')
-        self.__overwrite = kwargs.get('overwrite', strtobool('false'))
-        if not (self.__source_path and os.path.exists(self.__source_path)):
-            raise NotADirectoryError("Directory %s not present" % self.__source_path)
-        self.__source_path = os.path.abspath(self.__source_path)
+        self.__source_base_path = kwargs.get('directory')
+        if not (self.__source_base_path and os.path.exists(self.__source_base_path)):
+            raise NotADirectoryError("Directory %s not present" % self.__source_base_path)
+        self.__source_path = os.path.abspath(os.path.join(self.__source_base_path, self._source_name))
         # self._entity = self.__source_path
         self.__file_format = kwargs.get('file_format', 'csv')
 
@@ -57,34 +56,27 @@ class FSSource(Source):
         # TODO: Currently assuming directory only has CSV files
         # TODO: Add support for other files types later
         for root, dirs, files in os.walk(self.__source_path):
-            for file in files:
-                # TODO: technical debt- get all files in the folder and check if already processed
-                #  (using state management)
-                if file not in chain(*self._processed_history_list) \
-                        or self.__overwrite:
-                    self._logger.debug("Yielding file: %s", file)
-                    to_process = str(os.path.join(root, file))
-                    self._logger.info("Processing %s...", to_process)
+            for file in set(files).difference(set(chain(*self._processed_history_list))):
+                self._logger.debug("Yielding file: %s", file)
+                to_process = str(os.path.join(root, file))
+                self._logger.info("Processing %s...", to_process)
 
-                    if not bool(os.path.isfile(to_process)):
-                        continue
-                    if ProjectConfig.archive_folder() in to_process:
-                        continue
+                if not bool(os.path.isfile(to_process)):
+                    continue
 
-                    kwargs['file'] = file
-                    kwargs['path'] = root
-                    kwargs['table_name'] = GenericFunctions.folder_to_table(root.split(self.__source_path)[1][1:])
+                self._entity = file
+                self._entity_filter = None
 
-                    self._entity = file
-                    self._entity_filter = None
-                    try:
-                        self._correlation_id_in = file.split(f'{ProjectConfig.file_prefix()}_', 1)[1][0:-4]
-                    except Exception:
-                        self._correlation_id_in = None
-                    yield self._run(**kwargs)
-                else:
-                    self._logger.info("Skipping processed file: %s", file)
-                    yield dict(file_name=file, skipped=True)
+                kwargs['file'] = self._entity
+                kwargs['path'] = root
+                kwargs['table_name'] = GenericFunctions.folder_to_table(root.split(self.__source_path)[1][1:])
+
+                try:
+                    self._correlation_id_in = file.split(f'{ProjectConfig.file_prefix()}_', 1)[1][0:-4]
+                except Exception:
+                    self._correlation_id_in = None
+
+                yield self._run(**kwargs)
 
     def _get_data(self, **kwargs) -> dict:
         file = kwargs['file']

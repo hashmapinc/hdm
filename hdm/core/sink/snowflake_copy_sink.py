@@ -33,6 +33,7 @@ class SnowflakeCopySink(RDBMSSink):
         df = kwargs['data_frame']
         with self._dao.connection as conn:
             self._entity = f"{self._stage_name}.{table_name}"
+            self._entity_filter = None
             self._generate_query(file_name, table_name)
 
             cursor = conn.cursor()

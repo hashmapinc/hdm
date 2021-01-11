@@ -61,6 +61,7 @@ Table of Contents
     * [Utils](#utils)
         * [Project Configuration](#project-configuration)
 * [Repository Cloning](#repository-cloning)
+* [Miscellaneous](#miscellaneous)
 
 ## About
 
@@ -183,6 +184,7 @@ As of now MySQL, SQLLite, SQL Server and Azure SQL Server database tables can be
 The state management table will track the following values:
 
 * state_id: unique identifier
+* run_id: unique identifier for a run
 * job_id: unique identifier for a stage (source and sink pair).
 * correlation_id_in: Correlation id linking to a preceding pipeline
 * correlation_id_out: Correlation id on persistence
@@ -206,6 +208,7 @@ The state management table will track the following values:
 * updated_on: When this entry was last updated
 * row_count: Number of distinct rows extracted
 * created_on: When this entry was created
+* manifest_name: Name of the pipeline YAML file
 
 ## Pipeline YAML
 
@@ -448,21 +451,18 @@ Source
 
 *configuration*
 * directory - staging directory
-* overwrite - overwrite processed files
 ```
     - source:
         name: fs_stg
         type: FSSource
         conf:
           directory: $HDM_DATA_STAGING
-          overwrite: false
 ```
 *consume API*
 
 input:
 ```
 directory: staging directory | required
-overwrite: overwrite processed files | default true
 ```
 
 output:
@@ -483,7 +483,6 @@ Source
 
 *configuration*
 * directory - staging directory
-* overwrite - overwrite processed files
 * chunk - file chunk size
 ```
     - source:
@@ -491,7 +490,6 @@ Source
         type: FSChunkSource
         conf:
           directory: $HDM_DATA_STAGING
-          overwrite: false
           chunk: 200
 ```
 *consume API*
@@ -499,7 +497,6 @@ Source
 input:
 ```
 directory: staging directory | required
-overwrite: overwrite processed files | default true
 chunk: file chunk size
 ```
 
@@ -507,8 +504,10 @@ output:
 ```
 data_frame: pandas.DataFrame | required
 file_name: file name
+parent_file_name: file name of the large parent file | required
 record_count: pandas.DataFrame shape | required
 table_name: extracted table name from file path
+source_filter: source filter to query state management record for updates when the source_entity is same (the parent file name)| required
 ```
 ##### AzureBlobSource
 
@@ -537,6 +536,7 @@ input:
 ```
 env: section name in hdm profile yml file for connection information | required
 container: container name | required
+file_format: file format | default csv
 ```
 output:
 ```
@@ -829,7 +829,7 @@ return value: dictionary of state_id,job_id,correlation_id_in,
                correlation_id_out,source_entity,source_filter,
                sourcing_start_time,sourcing_end_time,sinking_start_time,
                sinking_end_time, first_record_pulled,last_record_pulled,
-               record_count
+               record_count,run_id,manifest_name
 ```
 ```
 name: update_state
@@ -843,17 +843,17 @@ return value :dictionary of state_id,job_id,correlation_id_in,
                    correlation_id_out,source_entity,source_filter,
                    sourcing_start_time,sourcing_end_time,sinking_start_time,
                    sinking_end_time, first_record_pulled,last_record_pulled,
-                   record_count
+                   record_count,run_id,manifest_name
 ```
 ```
 name: get_current_state
       get current state
-params: job_id | required, entity
+params: job_id | required, entity, entity_filter
 return value : dictionary of state_id,job_id,correlation_id_in,
                    correlation_id_out,source_entity,source_filter,
                    sourcing_start_time,sourcing_end_time,sinking_start_time,
                    sinking_end_time, first_record_pulled,last_record_pulled,
-                   record_count
+                   record_count,run_id,manifest_name
 ```
 ```
 name: get_last_record
@@ -1154,6 +1154,46 @@ The following can be configured in utils/project_config.py
 * query_limit - numbers rows returned by a query
 
 ## Repository Cloning
-Please refer to [clone readme](clone/clone-readme.md)
+Please refer to [clone readme](../../Desktop/hashmap_data_migrator/clone/clone-readme.md)
+
+## Miscellaneous
+* The database, schema, table name are part of the folder structure where files are dumped - in any file staging location.
+* The sink_name of a stage is part of the folder structure where files are dumped - in any file staging location.
+* Any file created locally is stored in {HDM_DATA_STAGING}\{sink_name}\{table_name}\
+* Any file created in cloud staging is stored in folder structure {sink_name}\{table_name}\
+* The source_name and sink_name <b>MUST MATCH between stages (combination of source and sink)</b> for the migrator to be able to pick up files for processing.
+E.g. Below you can see that sink_name for stage "FS to AzureBlob" is <b>azure_sink</b>. so, the source_name for stage "cloud storage create staging and run copy"
+is also <b>azure_sink</b>
+```
+# FS to AzureBlob
+    - source:
+        name: fs_chunk_stg
+        type: FSSource
+        conf:
+          directory: $HDM_DATA_STAGING
+      sink:
+        name: *azure_sink*
+        type: AzureBlobSink
+        conf:
+          env: azure
+          container: data
+
+#cloud storage create staging and run copy
+    - source:
+        name: *azure_sink*
+        type: AzureBlobSource
+        conf:
+          env: azure
+          container: data
+      sink:
+        name: sflk_copy_into_sink
+        type: SnowflakeAzureCopySink
+        conf:
+          env: snowflake_knerrir_schema
+          stage_name: TMP_KNERRIR
+          file_format: csv
+          stage_directory: data
+```
+
 
 

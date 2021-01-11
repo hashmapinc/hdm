@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
+import uuid
 
 from hdm.core.error.hdm_error import HDMError
 from hdm.core.state_management.state_manager import StateManager
@@ -33,7 +34,7 @@ class Orchestrator:
         """Execute data transport DataLinks."""
         raise NotImplementedError(f'Method not implemented for {type(self).__name__}.')
 
-    def _generate_state_manager(self, state_manager_config: dict, data_link_config: dict) -> StateManager:
+    def _generate_state_manager(self, state_manager_config: dict, data_link_config: dict, manifest_name: str, run_id) -> StateManager:
         """
         Generate a StateManager for each
         Args:
@@ -51,7 +52,9 @@ class Orchestrator:
             self._logger.error(error)
             raise HDMError(error)
 
+        state_manager.run_id = run_id
         state_manager.job_id = StateManager.generate_id()
+        state_manager.manifest_name = manifest_name
         state_manager.source = {
             'name': data_link_config['source']['name'],
             'type': data_link_config['source']['type'],

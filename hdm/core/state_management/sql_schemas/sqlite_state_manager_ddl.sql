@@ -13,6 +13,7 @@
 --DROP TABLE IF EXISTS `state_manager`;
 CREATE TABLE IF NOT EXISTS state_manager (
   state_id TEXT,
+  run_id TEXT,
   job_id TEXT,
   correlation_id_in TEXT,
   correlation_id_out TEXT,
@@ -35,5 +36,6 @@ CREATE TABLE IF NOT EXISTS state_manager (
   sinking_end_time INTEGER,
   updated_on INTEGER,
   row_count INTEGER,
-  created_on INTEGER
+  created_on INTEGER,
+  manifest_name TEXT
 );

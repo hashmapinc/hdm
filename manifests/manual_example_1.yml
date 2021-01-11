@@ -21,48 +21,16 @@ orchestrator:
 
 state_manager:
   name: state_manager
-  type: SQLiteStateManager
+  type: MySQLStateManager
   conf:
     connection: state_manager
 
 declared_data_links:
   stages:
 
-# Netezza to FS - single
-    - source:
-        name: netezza_source
-        type: NetezzaSource
-        conf:
-          env: netezza_jdbc
-          table_name: ADMIN.TEST1
-          watermark:
-              column: T1
-              offset: 2
-          checksum:
-              function:
-              column:
-      sink:
-        name: fs_chunk_stg
-        type: FSSink
-        conf:
-          directory: $HDM_DATA_STAGING
-
-# Chunk FS to FS
-    - source:
-        name: fs_chunk_stg
-        type: FSChunkSource
-        conf:
-          directory: $HDM_DATA_STAGING
-          chunk: 200
-      sink:
-        name: fs_stg
-        type: FSSink
-        conf:
-          directory: $HDM_DATA_STAGING
-
 # FS to AzureBlob
     - source:
-        name: fs_stg
+        name: fs_chunk_stg
         type: FSSource
         conf:
           directory: $HDM_DATA_STAGING

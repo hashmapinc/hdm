@@ -14,7 +14,6 @@
 import os
 from unittest import TestCase
 from hdm.core.dao.sqlite import SqLite
-
 from tests.core.Sagas.testenv_utils import TestEnvUtils
 
 

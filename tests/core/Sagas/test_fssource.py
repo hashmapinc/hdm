@@ -99,10 +99,3 @@ class TestFsSource(TestCase):
         self.__produce_df(self.__test_csv_conf)
         # Try reprocessing and verify if skipped or not
         self.__produce_df(self.__test_csv_conf, skipped=True)
-
-    def test_source_overwrite_processed_csv(self):
-        self.__test_csv_conf['source']['conf']['overwrite'] = 'true'
-        self.__test_csv_conf['source']['conf']['state_manager'] = self.__state_manager
-        self.__produce_df(self.__test_csv_conf)
-        # Try reprocessing and verify if overwritten or not
-        self.__produce_df(self.__test_csv_conf)

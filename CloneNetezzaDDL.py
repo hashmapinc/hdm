@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from hdm.core.catalog.crawler.netezza_crawler import NetezzaCrawler
+from hdm.core2.catalog.crawler.netezza_crawler import NetezzaCrawler
 # from providah.factories.package_factory import PackageFactory as pf
 #
 # pf.fill_registry()

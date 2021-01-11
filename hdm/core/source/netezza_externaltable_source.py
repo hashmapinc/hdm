@@ -67,7 +67,7 @@ class NetezzaExternalTableSource(Source):
             raise NotImplementedError("Unknown output type: %s" % self.__file_format)
         self._sink_entity = self.__unload_file_name
 
-        file_path = os.path.abspath(os.path.join(self.__dest_path, GenericFunctions.table_to_folder(self.__table)))
+        file_path = os.path.abspath(os.path.join(self.__dest_path, self._sink_name, GenericFunctions.table_to_folder(self.__table)))
         if not os.path.exists(file_path):
             os.makedirs(file_path)
         self.__unload_file = os.path.abspath(os.path.join(file_path, self.__unload_file_name))

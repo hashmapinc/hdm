@@ -129,7 +129,6 @@ class NetezzaSource(RDBMSSource):
                     where_clause += f" AND {watermark['column']} > {key_value_arr[1]}"
 
         where_clause += f" ORDER BY {watermark['column']}"
-
         return where_clause
 
     """
