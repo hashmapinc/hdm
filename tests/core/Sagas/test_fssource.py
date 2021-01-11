@@ -16,9 +16,9 @@ from unittest import TestCase
 
 import pandas as pd
 
-from hdm.core2.dao.sqlite import SqLite
-from hdm.core2.source.fs_source import FSSource
-from hdm.core2.state_management.state_manager import StateManager
+from hdm.core.dao.sqlite import SqLite
+from hdm.core.source.fs_source import FSSource
+from hdm.core.state_management.state_manager import StateManager
 from tests.core.Sagas.testenv_utils import TestEnvUtils
 
 

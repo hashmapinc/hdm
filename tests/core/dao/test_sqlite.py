@@ -15,7 +15,7 @@ import os
 import pandas as pd
 import sqlalchemy
 
-from hdm.core2.dao.sqlite import SqLite
+from hdm.core.dao.sqlite import SqLite
 from tests.hdm_test_case import HDMTestCase
 
 

@@ -11,10 +11,9 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
 import sqlalchemy
 import unittest
-from hdm.core2.dao.mysql import MySQL
+from hdm.core.dao.mysql import MySQL
 from tests.hdm_test_case import HDMTestCase
 
 

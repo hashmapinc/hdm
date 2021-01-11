@@ -19,7 +19,7 @@ from distutils.util import strtobool
 from typing import Union
 import pandas as pd
 from sqlalchemy import schema, Table, Column, Text
-from hdm.core2.state_management.state_manager import StateManager
+from hdm.core.state_management.state_manager import StateManager
 from hdm.data_link_builder import DataLinkBuilder
 
 

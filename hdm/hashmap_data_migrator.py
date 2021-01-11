@@ -15,7 +15,7 @@ import argparse
 import os
 import logging.config
 
-from hdm.core2.utils.parse_config import ParseConfig
+from hdm.core.utils.parse_config import ParseConfig
 from hdm.migration_driver import MigrationDriver
 
 

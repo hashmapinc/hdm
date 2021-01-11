@@ -14,7 +14,7 @@
 import unittest
 from unittest import TestCase
 
-from hdm.core2.dao.snowflake import Snowflake
+from hdm.core.dao.snowflake import Snowflake
 
 
 class TestSnowflake(TestCase):

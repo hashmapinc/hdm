@@ -14,7 +14,7 @@
 import os
 from unittest import TestCase
 
-from hdm.core2.utils.project_config import ProjectConfig
+from hdm.core.utils.project_config import ProjectConfig
 
 
 class TestProjectConfig(TestCase):

@@ -17,11 +17,12 @@ from unittest import TestCase
 
 import logging
 
-from hdm.core2.sink.s3_sink import S3Sink
+from hdm.core.sink.s3_sink import S3Sink
 from tests.core.Sagas.testenv_utils import TestEnvUtils
 
 # Bucket name where CSV's will be created. Will be prefixed with 'hdm-'
 S3_BUCKET_NAME = 'testbucket'
+
 
 @unittest.skip
 class TestS3Sink(TestCase):

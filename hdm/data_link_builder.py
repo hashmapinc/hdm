@@ -13,9 +13,9 @@
 # limitations under the License.
 from providah.factories.package_factory import PackageFactory as pf
 
-from hdm.core2.sink.sink import Sink
-from hdm.core2.source.source import Source
-from hdm.core2.state_management.state_manager import StateManager
+from hdm.core.sink.sink import Sink
+from hdm.core.source.source import Source
+from hdm.core.state_management.state_manager import StateManager
 
 
 class DataLinkBuilder:

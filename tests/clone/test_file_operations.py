@@ -11,10 +11,9 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
 from unittest import TestCase
 from unittest.mock import MagicMock
-from clone2.config.netezza_config import NetezzaConfig
+from clone.config.netezza_config import NetezzaConfig
 import fileinput
 
 

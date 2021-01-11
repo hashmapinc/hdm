@@ -13,7 +13,7 @@
 # limitations under the License.
 import os
 
-from hdm.core2.orchestrator.declared_orchestrator import DeclaredOrchestrator
+from hdm.core.orchestrator.declared_orchestrator import DeclaredOrchestrator
 from tests.hdm_test_case import HDMTestCase
 
 
