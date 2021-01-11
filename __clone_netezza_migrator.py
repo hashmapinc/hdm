@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from clone2.common.clone_process import CloneProcess
-from clone2.config.netezza_config import NetezzaConfig
+from clone.common.clone_process import CloneProcess
+from clone.config.netezza_config import NetezzaConfig
 
 if __name__ == '__main__':
     netezza = CloneProcess(NetezzaConfig())
