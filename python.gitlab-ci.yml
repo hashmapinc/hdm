@@ -40,7 +40,6 @@ test_deploy:
   image: python:3.7.7-buster
   script:
     - rm -rf dist
-    - pip install -r requirements.txt
     - pip install twine
     - python setup.py sdist
     - twine upload --verbose -u $PYPIUN -p $PYPIPSWD --repository-url https://test.pypi.org/legacy/ dist/*
@@ -52,7 +51,6 @@ prod_deploy:
   image: python:3.7.7-buster
   script:
     - rm -rf dist
-    - pip install -r requirements.txt
     - pip install twine
     - python setup.py sdist
     - twine upload --verbose -u $PYPIUN_PROD -p $PYPIPSWD_PROD dist/*
