@@ -65,11 +65,11 @@ pyparsing==2.4.7
 python-dateutil==2.8.1
 python-json-logger==2.0.1
 pytz==2020.4
-PyYAML==5.3.1
+PyYAML==5.4
 requests==2.23.0
 requests-oauthlib==1.3.0
 requirements-detector==0.7
-rsa==4.6
+rsa==4.7
 s3transfer==0.3.3
 setoptconf==0.2.0
 six==1.15.0
