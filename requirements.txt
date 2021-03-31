@@ -54,7 +54,7 @@ pycryptodomex==3.9.9
 pydocstyle==5.1.1
 pyflakes==2.2.0
 PyJWT==1.7.1
-pylint==2.5.2
+pylint==2.7.0
 pylint-celery==0.3
 pylint-django==2.0.15
 pylint-flask==0.6
